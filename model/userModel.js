@@ -29,8 +29,13 @@ const getAllUsers = (done) => {
   User.find((error, data) => done(error, data));
 };
 
+const getLogById = (id, done) => {
+  User.findById({ _id: id }, (error, data) => done(error, data));
+};
+
 module.exports = {
   createNewUser,
   updateUserById,
   getAllUsers,
+  getLogById,
 };

@@ -2,6 +2,7 @@ const {
   createNewUser,
   updateUserById,
   getAllUsers,
+  getLogById,
 } = require("../model/userModel");
 
 const createUser = (req, res) => {
@@ -16,10 +17,13 @@ const createUser = (req, res) => {
   });
 };
 
-const updateUser = (req, res) => {
-  const { id, description, duration, date } = req.body;
+const addExercises = (req, res) => {
+  const { description, duration, date } = req.body;
+  const { id } = req.params
 
-  const newDate = new Date(date).toDateString();
+  const newDate = date
+    ? new Date(date).toDateString()
+    : new Date().toDateString();
   const newDuration = Number(duration);
 
   const info = {
@@ -35,11 +39,11 @@ const updateUser = (req, res) => {
     const { _id, username } = data;
 
     res.status(200).json({
-      username,
-      description,
-      duration: newDuration,
-      date: newDate,
       _id,
+      username,
+      date: newDate,
+      duration: newDuration,
+      description,
     });
   });
 };
@@ -57,8 +61,21 @@ const getAll = (_req, res) => {
   });
 };
 
+const getLogs = (req, res) => {
+  const { id } = req.params;
+
+  getLogById(id, (error, data) => {
+    if (error) return res.status(404).json(error);
+
+    const { _id, username, count, log } = data;
+
+    res.status(200).json({ _id, username, count, log });
+  });
+};
+
 module.exports = {
   createUser,
-  updateUser,
+  addExercises,
   getAll,
+  getLogs,
 };
