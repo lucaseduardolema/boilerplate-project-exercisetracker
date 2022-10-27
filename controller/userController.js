@@ -3,7 +3,7 @@ const {
   updateUserById,
   getAllUsers,
   getLogById,
-} = require("../model/userModel");
+} = require("../services/userService");
 
 const createUser = (req, res) => {
   const { username } = req.body;
@@ -19,10 +19,17 @@ const createUser = (req, res) => {
 
 const addExercises = (req, res) => {
   const { description, duration, date } = req.body;
-  const { id } = req.params
+  const { id } = req.params;
 
-  const newDate = date
-    ? new Date(date).toDateString()
+  let dataFormated
+
+  if (date) {
+    dataFormated = date.split('-').join('/')
+  }
+
+
+  const newDate = dataFormated
+    ? new Date(dataFormated).toDateString()
     : new Date().toDateString();
   const newDuration = Number(duration);
 
@@ -34,16 +41,19 @@ const addExercises = (req, res) => {
   };
 
   updateUserById(info, (error, data) => {
+    console.log(error);
     if (error) return res.status(404).json(error);
 
-    const { _id, username } = data;
-
+    const { _id, username, log } = data;
+    const index = log.length - 1;
+    const obj = log[index];
+    
     res.status(200).json({
-      _id,
+      _id: _id.toString(),
       username,
-      date: newDate,
-      duration: newDuration,
-      description,
+      date: obj.date,
+      duration: obj.duration,
+      description: obj.description
     });
   });
 };
