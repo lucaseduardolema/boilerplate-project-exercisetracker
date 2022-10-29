@@ -174,6 +174,8 @@ const getLogs = (req, res) => {
       });
     }
 
+    console.log(logSorted);
+
     res.status(200).json({ _id, username, count, log: logSorted });
   });
 };
